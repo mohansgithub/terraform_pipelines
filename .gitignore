@@ -1,4 +1,8 @@
 # Local .terraform directories
+
+creds.tf
+
+
 .terraform/
 
 # .tfstate files
