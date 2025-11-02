@@ -22,7 +22,7 @@ parameters {
 
         stage('Terraform Init') {
             when {
-                expression { params.RUN_STAGE == 'apply' || params.RUN_STAGE == 'destroy' }
+                expression { params.RUN_STAGE == 'apply' }
             }
             steps {
                 bat 'terraform init'
@@ -31,7 +31,7 @@ parameters {
 
         stage('Terraform Plan') {
              when {
-                expression { params.RUN_STAGE == 'apply' || params.RUN_STAGE == 'destroy' }
+                expression { params.RUN_STAGE == 'apply' }
             }
             steps {
                 bat 'terraform plan -out=tfplan'
