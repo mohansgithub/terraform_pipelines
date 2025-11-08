@@ -18,7 +18,6 @@ module "ec2_instance" {
   name = "mohan-single-instance"
   ami = "ami-01760eea5c574eb86"
   instance_type = "t3.micro"
-  key_name      = "Jenkins_Node"
   monitoring    = true
 
   tags = {
