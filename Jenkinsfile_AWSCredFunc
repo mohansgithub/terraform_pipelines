@@ -11,7 +11,7 @@ parameters {
     stages {
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/mohansgithub/terraform_pipelines.git'
+                git branch: 'main', url: 'https://github.com/sashinfi/terraform_aws.git'
             }
         }
 
@@ -23,21 +23,14 @@ parameters {
                 bat 'terraform init'
             }
         }
-
-        stage('Terraform Plan') {
-             when {
-                expression { params.RUN_STAGE == 'apply' }
-            }
-            steps {
-                bat 'terraform plan -out=tfplan'
-            }
-        }
         stage('Terraform Apply/Destroy') {
             steps {
                 script {
                     withCredentials([aws(credentialsId: 'aws-jenkins-creds', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                       bat 'echo Access key: %AWS_ACCESS_KEY_ID%'  // should NOT print blank
+                     bat 'echo Access key: %AWS_ACCESS_KEY_ID%'  // should NOT print blank
+                     bat 'echo Access key: %AWS_SECRET_ACCESS_KEY%'  // should NOT print blank
                         if (params.RUN_STAGE == 'apply') {
+                            bat 'terraform plan -out=tfplan'
                             bat 'terraform apply -auto-approve tfplan'
                         } else if (params.RUN_STAGE == 'destroy') {
                             bat 'terraform destroy -auto-approve'
