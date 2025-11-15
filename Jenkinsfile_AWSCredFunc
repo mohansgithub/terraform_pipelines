@@ -11,18 +11,10 @@ parameters {
     stages {
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/sashinfi/terraform_aws.git'
+                git 'https://github.com/mohansgithub/terraform_pipelines.git'
             }
         }
 
-        stage('Terraform Init') {
-            when {
-                expression { params.RUN_STAGE == 'apply'}
-            }
-            steps {
-                bat 'terraform init'
-            }
-        }
         stage('Terraform Apply/Destroy') {
             steps {
                 script {
@@ -30,10 +22,12 @@ parameters {
                      bat 'echo Access key: %AWS_ACCESS_KEY_ID%'  // should NOT print blank
                      bat 'echo Access key: %AWS_SECRET_ACCESS_KEY%'  // should NOT print blank
                         if (params.RUN_STAGE == 'apply') {
+                            bat 'terraform init -reconfigure'
                             bat 'terraform plan -out=tfplan'
                             bat 'terraform apply -auto-approve tfplan'
                         } else if (params.RUN_STAGE == 'destroy') {
-                            bat 'terraform destroy -auto-approve'
+                           bat 'terraform init -reconfigure'
+                           bat 'terraform destroy -auto-approve'
                         } else {
                             error("❌ Invalid RUN_STAGE parameter. Must be apply or destroy.")
                         }
